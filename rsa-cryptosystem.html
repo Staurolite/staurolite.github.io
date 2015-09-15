@@ -27,7 +27,9 @@
 </h5>
 
 <h2>背景介绍</h2>
-<p>关于RSA的历史及故事可以参考链接<a href="http://localhost-8080.com/2013/12/history-of-rsa/">4</a></p>
+<p>关于 <strong>RSA</strong> 的历史及故事可以参考链接<a href="http://localhost-8080.com/2013/12/history-of-rsa/">4</a>
+<img alt="RSA" src="http://7xli4b.com1.z0.glb.clouddn.com/RSA.png" />
+<small>自左至右：Adi Shamir, Ron Rivest, Leonard Adleman <a href="https://people.csail.mit.edu/rivest/photos/Adi-Ron-Len.jpg">via</a></small></p>
 <h2>原理介绍</h2>
 <p>非对称加密的关键在于构建一个单向函数（one way function），易与正向计算，但是难于求逆。模函数就满足这一特性：
 </p>
@@ -86,6 +88,8 @@ $$</div>
 <strong>安全性</strong>：解密经RSA加密的信息的关键在于得到私钥 <span class="math">\(d\)</span>。从上述的描述来看，要想从公钥 <span class="math">\((N,e)\)</span> 中推断出私钥 <span class="math">\(d\)</span>,需要求出 <span class="math">\(\Phi(N)\)</span>, 最快的方法是将 <span class="math">\(N\)</span> 因子分解，求出 <span class="math">\(p\)</span> 和 <span class="math">\(q\)</span>,这时得到 <span class="math">\(d\)</span> 将不费吹灰之力，然而对于大整数的因式分解目前还没有多项式时间内的算法。这也是RSA加密算法的基石，两数相乘容易而分解困难，又构成了一个单向函数。</p>
 <h2>具体实例</h2>
 <p>Alice 和 Bob 是好友，他们有加密通讯的需要。此时,Alice决定采用RSA加密方法，她选取了如下参数：    </p>
+<p><img alt="Alice &amp; Bob" src="http://7xli4b.com1.z0.glb.clouddn.com/RSA_Alice_Bob.png" />
+</p>
 <div class="math">$$
 \begin{align*}
 p &amp;= 53\\
