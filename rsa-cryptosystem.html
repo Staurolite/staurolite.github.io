@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>RSA 加密算法 | Firefly</title>
+  <meta charset="utf-8">
+<meta name="description" content="RSA 加密算法原理介绍"><meta name="author" content="Matmul">  <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+  <meta http-equiv="Cache-Control" content="max-age=604800, must-revalidate" />
+  <link href="/theme/css/screen.css" rel="stylesheet" type="text/css" />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link href="/" type="application/atom+xml" rel="alternate" title="Firefly ATOM Feed" />
+</head>
+<body>
+<div id="outer-wrapper">
+<div id="header-wrapper">
+  <div class="logo"><a href="/index.html">Firefly</a></div>
+  <div class="small"></div>
+    <div class="nav">
+  <li><a href="/archives/">Archive</a></li>
+  <li><a href="/about/">About</a></li>
+    </div>
+</div>    <div id="main">
+<h2><a href="/rsa-cryptosystem.html">RSA 加密算法</a></h2>
+<h5><i class="icon-feather"></i> Tue 15 September 2015
+<i class="icon-bookmarks"></i>
+<span><a href="/tag/crypto.html">Crypto</a> / </span>
+</h5>
+
+<h2>背景介绍</h2>
+<p>关于RSA的历史及故事可以参考链接<a href="http://localhost-8080.com/2013/12/history-of-rsa/">4</a></p>
+<h2>原理介绍</h2>
+<p>非对称加密的关键在于构建一个单向函数（one way function），易与正向计算，但是难于求逆。模函数就满足这一特性：
+</p>
+<div class="math">$$
+\text{Easy}: m^e \bmod n =?\\  
+\text{Hard}: ?^3 \bmod n =c  
+$$</div>
+<p>
+另一关键是找到解密的key，使得拥用key的人可以快速求解逆向过程。假设我们能找到一个key：<span class="math">\(d\)</span>,使得：</p>
+<div class="math">$$
+m^e \bmod n =c\\  
+c^d \bmod n =m  
+$$</div>
+<p>那么，对于信息 <span class="math">\(m\)</span>，我通过 <span class="math">\(e\)</span> 加密后得到 <span class="math">\(c\)</span>。如果没有密钥 <span class="math">\(d\)</span> 的话，就很难从加密后的信息 <span class="math">\(c\)</span> 中还原出 <span class="math">\(m\)</span>。但如果有密钥 <span class="math">\(d\)</span> ，通过相似的模运算，可以简单地从 <span class="math">\(c\)</span> 中解出 <span class="math">\(m\)</span>,获得未加密的信息 <span class="math">\(m\)</span>。现在的目标在于如果得到满足这种假设条件的 <span class="math">\(d\)</span> 的表达式。</p>
+<p>将上式转变为同余的描述方式，即:</p>
+<div class="math">$$
+m^e\equiv c\,(\bmod n)\\
+c^d\equiv m\,(\bmod n)
+$$</div>
+<p>根据同余的运算法则，参考链接 <a href="https://zh.wikipedia.org/zh-cn/%E5%90%8C%E9%A4%98">7</a>，又可以将上式变为：</p>
+<div class="math">$$\begin{equation} m^{ed}\equiv m\,(\bmod n)\end{equation}\tag{*}\label{*}$$</div>
+<p>要找到满足条件的 <span class="math">\(ed\)</span>，我们把目光放在欧拉定理上，即</p>
+<div class="math">$$m^{\Phi(n)}\equiv 1\,(\bmod n)$$</div>
+<p>其中要求 <span class="math">\(m,n\)</span> 互质，欧拉函数<span class="math">\(\Phi(n)\)</span> 为小于 <span class="math">\(n\)</span> 的正整数中与 <span class="math">\(n\)</span> 互质的数的数目，参考链接 <a href="https://zh.wikipedia.org/zh-cn/%E6%AC%A7%E6%8B%89%E5%87%BD%E6%95%B0">8</a>。</p>
+<p>将欧拉定理经过以下简单的变换：</p>
+<div class="math">$$
+(m^{\Phi(n)})^k \equiv 1\,(\bmod n) \\
+m\times m^{k\Phi(n)} \equiv 1\,(\bmod n) \\ 
+m^{k\Phi(n)+1} \equiv 1\,(\bmod n)
+$$</div>
+<p>对比式<span class="math">\(\eqref{*}\)</span>可知：</p>
+<div class="math">$$
+ed = k\Phi(n)+1 \\
+d = \frac{k\Phi(n)+1}{e}
+$$</div>
+<p>根据欧拉函数 <span class="math">\(\Phi(n)\)</span> 的两个特性：</p>
+<ol>
+<li>当 <span class="math">\(p\)</span> 为素数时: <span class="math">\(\Phi(p) = p -1\)</span>  </li>
+<li>相乘属性：<span class="math">\(\Phi(A \times B) = \Phi(A) \times \Phi(b)\)</span></li>
+</ol>
+<p>我们可以找两个素数 <span class="math">\(p\)</span>, <span class="math">\(q\)</span>, 使得 <span class="math">\(N=p\times q\)</span> ，则：  </p>
+<div class="math">$$\Phi(N) = \Phi(p) \times \Phi(q) = (p-1)(q-1)$$</div>
+<p>得到 <span class="math">\(d\)</span> 的表达式： <br />
+</p>
+<div class="math">$$d = \frac{k(p-1)(q-1)+1}{e}$$</div>
+<p>具体确定<span class="math">\(d\)</span>的步骤：  </p>
+<ol>
+<li>找两个素数 <span class="math">\(p\)</span>，<span class="math">\(q\)</span>  </li>
+<li>确定 <span class="math">\(N = p \times q\)</span>   </li>
+<li>确定 <span class="math">\(\Phi(N) = (p-1)(q-1)\)</span>  </li>
+<li>找一个小的公钥 <span class="math">\(e\)</span>，要求是奇数，且和 <span class="math">\(\Phi(N)\)</span> 互质    </li>
+<li>计算出 <span class="math">\(d\)</span>  </li>
+<li>将 <span class="math">\((N, e)\)</span> 作为公钥发放出去，<span class="math">\((N, d)\)</span>作为私钥自己保存  </li>
+</ol>
+<p><br/>
+<strong>安全性</strong>：解密经RSA加密的信息的关键在于得到私钥 <span class="math">\(d\)</span>。从上述的描述来看，要想从公钥 <span class="math">\((N,e)\)</span> 中推断出私钥 <span class="math">\(d\)</span>,需要求出 <span class="math">\(\Phi(N)\)</span>, 最快的方法是将 <span class="math">\(N\)</span> 因子分解，求出 <span class="math">\(p\)</span> 和 <span class="math">\(q\)</span>,这时得到 <span class="math">\(d\)</span> 将不费吹灰之力，然而对于大整数的因式分解目前还没有多项式时间内的算法。这也是RSA加密算法的基石，两数相乘容易而分解困难，又构成了一个单向函数。</p>
+<h2>具体实例</h2>
+<p>Alice 和 Bob 是好友，他们有加密通讯的需要。此时,Alice决定采用RSA加密方法，她选取了如下参数：    </p>
+<div class="math">$$
+\begin{align*}
+p &amp;= 53\\
+q &amp;= 59\\
+N &amp;= p \times q = 53 \times 59 = 3127\\
+\Phi(N)&amp;=(p-1)(q-1)=3016\\
+k &amp;= 2\\
+e &amp;= 3
+\end{align*}
+$$</div>
+<p>
+计算得：  <span class="math">\(d=2011\)</span>  </p>
+<p>Alice将公钥 <span class="math">\((N, e) = (3016,3)\)</span>交给Bob，自己保留私钥 <span class="math">\((N, d)=(3016, 2011)\)</span>  </p>
+<p>这时Bob想把给Alice发送消息，如字母A，他先将A按ASCII码转为数字97，用公钥对数字97加密：<br />
+</p>
+<div class="math">$$c = m^e \bmod N = 97^3 \bmod 3127 = 2716$$</div>
+<p>
+Bob把加密后的数字291发送给Alice，Alice看到后用私钥解密：<br />
+</p>
+<div class="math">$$m = c^d \bmod N = 2716\times2011 \bmod 3127 = 97$$</div>
+<p>
+Alice将数字97按照ASCII码重新转化为字母A</p>
+<p>至于 Alice 和 Bob 为什么有加密通讯的需要，参考链接<a href="http://localhost-8080.com/2014/02/story-of-alice-and-bob/">5 Alice 和 Bob的故事</a>。</p>
+<h2>参考：</h2>
+<p>1.<a href="http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html">阮一峰 RSA算法原理（一）</a>  <br />
+2.<a href="http://www.ruanyifeng.com/blog/2013/07/rsa_algorithm_part_two.html">阮一峰 RSA算法原理（二）</a>  <br />
+3.<a href="http://www.guokr.com/blog/327469/">密码学之旅 RSA加密算法</a> <br />
+4.<a href="http://localhost-8080.com/2013/12/history-of-rsa/">RSA的历史</a> <br />
+5.<a href="http://localhost-8080.com/2014/02/story-of-alice-and-bob/">Alice和Bob的故事</a> <br />
+6.<a href="https://en.wikipedia.org/wiki/RSA_(cryptosystem)">维基百科RSA加密</a> <br />
+7.<a href="https://zh.wikipedia.org/zh-cn/%E5%90%8C%E9%A4%98">同余</a> <br />
+8.<a href="https://zh.wikipedia.org/zh-cn/%E6%AC%A7%E6%8B%89%E5%87%BD%E6%95%B0">欧拉函数</a> <br />
+9.<a href="http://www.matrix67.com/blog/archives/5100">跨越千年的RSA算法</a>  </p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+
+<p align="center"><a href="#">on the top</a></p>
+<h3>Comments</h3>
+<div id="disqus_thread">
+    <script type="text/javascript">
+       var disqus_identifier = "rsa-cryptosystem.html";
+       (function() {
+       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+       dsq.src = 'http://matmul.disqus.com/embed.js';
+       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+</div>    </div>
+</div>
+<div id="footer-wrapper">
+<ul class="footer">
+     <li class="footer"><a href="/tag/crypto.html">Crypto&nbsp;&bull;&nbsp;</a></li>
+     <li class="footer"><a href="/tag/git.html">git&nbsp;&bull;&nbsp;</a></li>
+     <li class="footer"><a href="/tag/life.html">life</a></li>
+</ul><ul class="footer">
+    <li class="footer">&copy;&nbsp;2014&nbsp;::</li>
+    <li class="footer"><a href="">Firefly </a>&nbsp;::</li>
+    <li class="footer">powered by <a href="https://github.com/getpelican">pelican</a>&nbsp;::</li>
+    <li class="footer"><a href="http://creativecommons.org/licenses/by-nc/3.0/deed.ru">CC BY-NC</a></li>
+</ul>
+</div><script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-67030407-1', '');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>
