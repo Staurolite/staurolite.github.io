@@ -43,39 +43,39 @@ $$</div>
 m^e \bmod n =c\\  
 c^d \bmod n =m  
 $$</div>
-<p>那么，对于信息 <span class="math">\(m\)</span>，我通过 <span class="math">\(e\)</span> 加密后得到 <span class="math">\(c\)</span>。如果没有密钥 <span class="math">\(d\)</span> 的话，就很难从加密后的信息 <span class="math">\(c\)</span> 中还原出 <span class="math">\(m\)</span>。但如果有密钥 <span class="math">\(d\)</span> ，通过相似的模运算，可以简单地从 <span class="math">\(c\)</span> 中解出 <span class="math">\(m\)</span>,获得未加密的信息 <span class="math">\(m\)</span>。现在的目标在于如果得到满足这种假设条件的 <span class="math">\(d\)</span> 的表达式。</p>
-<p>将上式转变为同余的描述方式，即:</p>
+<p>那么，对于信息 <span class="math">\(m\)</span>，我通过 <span class="math">\(e\)</span> 加密后得到 <span class="math">\(c\)</span>。如果没有密钥 <span class="math">\(d\)</span> ，就很难从加密后的信息 <span class="math">\(c\)</span> 中还原出 <span class="math">\(m\)</span>。但如果有密钥 <span class="math">\(d\)</span> ，通过相似的模运算，可以简单地从 <span class="math">\(c\)</span> 中解出 <span class="math">\(m\)</span>,得知加密前的信息。目标是如何找到满足这种假设的 <span class="math">\(d\)</span> 表达式。</p>
+<p>先将上式转变为同余方程的描述方式，即:</p>
 <div class="math">$$
 m^e\equiv c\,(\bmod n)\\
 c^d\equiv m\,(\bmod n)
 $$</div>
-<p>根据同余的运算法则，参考链接 <a href="https://zh.wikipedia.org/zh-cn/%E5%90%8C%E9%A4%98">7</a>，又可以将上式变为：</p>
+<p>根据同余的运算法则，参考链接 <a href="https://zh.wikipedia.org/zh-cn/%E5%90%8C%E9%A4%98">7</a>，又可将其变为：</p>
 <div class="math">$$\begin{equation} m^{ed}\equiv m\,(\bmod n)\end{equation}\tag{*}\label{*}$$</div>
-<p>要找到满足条件的 <span class="math">\(ed\)</span>，我们把目光放在欧拉定理上，即</p>
+<p>为了找到满足条件的 <span class="math">\(ed\)</span>，我们把目光聚焦在欧拉定理：</p>
 <div class="math">$$m^{\Phi(n)}\equiv 1\,(\bmod n)$$</div>
 <p>其中要求 <span class="math">\(m,n\)</span> 互质，欧拉函数<span class="math">\(\Phi(n)\)</span> 为小于 <span class="math">\(n\)</span> 的正整数中与 <span class="math">\(n\)</span> 互质的数的数目，参考链接 <a href="https://zh.wikipedia.org/zh-cn/%E6%AC%A7%E6%8B%89%E5%87%BD%E6%95%B0">8</a>。</p>
-<p>将欧拉定理经过以下简单的变换：</p>
+<p>将欧拉定理经过以下简单变换：</p>
 <div class="math">$$
 (m^{\Phi(n)})^k \equiv 1\,(\bmod n) \\
-m\times m^{k\Phi(n)} \equiv 1\,(\bmod n) \\ 
-m^{k\Phi(n)+1} \equiv 1\,(\bmod n)
+m\times m^{k\Phi(n)} \equiv m\,(\bmod n) \\ 
+m^{k\Phi(n)+1} \equiv m\,(\bmod n)
 $$</div>
 <p>对比式<span class="math">\(\eqref{*}\)</span>可知：</p>
 <div class="math">$$
 ed = k\Phi(n)+1 \\
 d = \frac{k\Phi(n)+1}{e}
 $$</div>
-<p>根据欧拉函数 <span class="math">\(\Phi(n)\)</span> 的两个特性：</p>
+<p>欧拉函数 <span class="math">\(\Phi(n)\)</span> 有以下两个性质：</p>
 <ol>
 <li>当 <span class="math">\(p\)</span> 为素数时: <span class="math">\(\Phi(p) = p -1\)</span>  </li>
 <li>相乘属性：<span class="math">\(\Phi(A \times B) = \Phi(A) \times \Phi(b)\)</span></li>
 </ol>
-<p>我们可以找两个素数 <span class="math">\(p\)</span>, <span class="math">\(q\)</span>, 使得 <span class="math">\(N=p\times q\)</span> ，则：  </p>
+<p>找两个素数 <span class="math">\(p\)</span>, <span class="math">\(q\)</span>, 使得 <span class="math">\(N=p\times q\)</span> ，由欧拉函数的性质，可以轻易求解 <span class="math">\(\Phi(n)\)</span> ：    </p>
 <div class="math">$$\Phi(N) = \Phi(p) \times \Phi(q) = (p-1)(q-1)$$</div>
-<p>得到 <span class="math">\(d\)</span> 的表达式： <br />
+<p>从而得到 <span class="math">\(d\)</span> 的表达式为： <br />
 </p>
 <div class="math">$$d = \frac{k(p-1)(q-1)+1}{e}$$</div>
-<p>具体确定<span class="math">\(d\)</span>的步骤：  </p>
+<p><strong>总结</strong>具体确定<span class="math">\(d\)</span>的步骤：  </p>
 <ol>
 <li>找两个素数 <span class="math">\(p\)</span>，<span class="math">\(q\)</span>  </li>
 <li>确定 <span class="math">\(N = p \times q\)</span>   </li>
@@ -83,12 +83,13 @@ $$</div>
 <li>找一个小的公钥 <span class="math">\(e\)</span>，要求是奇数，且和 <span class="math">\(\Phi(N)\)</span> 互质    </li>
 <li>计算出 <span class="math">\(d\)</span>  </li>
 <li>将 <span class="math">\((N, e)\)</span> 作为公钥发放出去，<span class="math">\((N, d)\)</span>作为私钥自己保存  </li>
+<li>对方传递来的信息 <span class="math">\(m\)</span> 通过公钥 <span class="math">\(e\)</span> 加密，接收后通过私钥 <span class="math">\(d\)</span> 解密。</li>
 </ol>
 <p><br/>
 <strong>安全性</strong>：解密经RSA加密的信息的关键在于得到私钥 <span class="math">\(d\)</span>。从上述的描述来看，要想从公钥 <span class="math">\((N,e)\)</span> 中推断出私钥 <span class="math">\(d\)</span>,需要求出 <span class="math">\(\Phi(N)\)</span>, 最快的方法是将 <span class="math">\(N\)</span> 因子分解，求出 <span class="math">\(p\)</span> 和 <span class="math">\(q\)</span>,这时得到 <span class="math">\(d\)</span> 将不费吹灰之力，然而对于大整数的因式分解目前还没有多项式时间内的算法。这也是RSA加密算法的基石，两数相乘容易而分解困难，又构成了一个单向函数。</p>
 <h2>具体实例</h2>
 <p><img alt="Alice &amp; Bob" src="http://7xli4b.com1.z0.glb.clouddn.com/RSA_Alice_Bob.png" />
-Alice 和 Bob 是好友，他们有加密通讯的需要。此时,Alice决定采用RSA加密方法，她选取了如下参数：    </p>
+Alice 和 Bob 两人是情侣，他们会彼此分享秘密，Alice建议Bob在发送消息前用RSA方法加密，她选取了如下参数：    </p>
 <div class="math">$$
 \begin{align*}
 p &amp;= 53\\
@@ -101,17 +102,18 @@ e &amp;= 3
 $$</div>
 <p>
 计算得：  <span class="math">\(d=2011\)</span>  </p>
-<p>Alice将公钥 <span class="math">\((N, e) = (3016,3)\)</span>交给Bob，自己保留私钥 <span class="math">\((N, d)=(3016, 2011)\)</span>  </p>
-<p>这时Bob想把给Alice发送消息，如字母A，他先将A按ASCII码转为数字97，用公钥对数字97加密：<br />
+<p>Alice将公钥 <span class="math">\((N, e) = (3127,3)\)</span>交给Bob，自己保留私钥 <span class="math">\((N, d)=(3127, 2011)\)</span>  </p>
+<p>当Bob想给Alice发送消息，如字母A，他会将A按ASCII码转为数字97，用公钥对数字97加密：<br />
 </p>
 <div class="math">$$c = m^e \bmod N = 97^3 \bmod 3127 = 2716$$</div>
 <p>
-Bob把加密后的数字291发送给Alice，Alice看到后用私钥解密：<br />
+Bob把加密后的数字2716发送给Alice，Alice看到后用私钥解密：<br />
 </p>
 <div class="math">$$m = c^d \bmod N = 2716\times2011 \bmod 3127 = 97$$</div>
 <p>
-Alice将数字97按照ASCII码重新转化为字母A</p>
-<p>至于 Alice 和 Bob 为什么有加密通讯的需要，参考链接<a href="http://localhost-8080.com/2014/02/story-of-alice-and-bob/">5 Alice 和 Bob的故事</a>。</p>
+Alice将数字97按ASCII码重新转化为字母A。  </p>
+<p>至于窥探隐私的第三者，即便截获了中间传输的信息 <span class="math">\(c\)</span>,通过欺骗 Bob 得到了他的公钥 <span class="math">\((N, e)\)</span>，只要 Alice 保持清醒，对私钥守口如瓶，第三者依然束手无策。实际上 Alice 可以把相同的公钥发放给无数人，他们都能用公钥加密发送给Alice的信息，同样,没有私钥的Bob无法知晓里面的内容。</p>
+<p>关于Alice 和 Bob 之间到底会发生什么，参考链接<a href="http://localhost-8080.com/2014/02/story-of-alice-and-bob/">5 Alice 和 Bob的故事</a>。</p>
 <h2>参考：</h2>
 <p>1.<a href="http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html">阮一峰 RSA算法原理（一）</a>  <br />
 2.<a href="http://www.ruanyifeng.com/blog/2013/07/rsa_algorithm_part_two.html">阮一峰 RSA算法原理（二）</a>  <br />
